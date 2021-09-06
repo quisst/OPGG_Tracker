@@ -4,11 +4,14 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
+import math
 
 
 nickname = input("닉네임을 입력해주세요. : ")
 
 def research():
+    spin = int(input("검색할 전적 수를 입력해주세요. (최대 100) : "))
     driver = webdriver.Chrome('chromedriver.exe')
     driver.implicitly_wait(3)
 
@@ -31,11 +34,16 @@ def research():
 
     WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="right_gametype_soloranked"]/a')))
     driver.find_element_by_xpath('//*[@id="right_gametype_soloranked"]/a').click()
-    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '// *[ @ id = "right_match"]')))
+    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="right_match"]')))
+
+    num = math.ceil(spin / 20)
+    for i in range(num-1):
+        driver.find_element_by_xpath('//*[@id="SummonerLayoutContent"]/div[2]/div[2]/div/div[2]/div[{0}]/a'.format(i+4)).click()
+        time.sleep(5)
 
     html_code = driver.page_source
 
-    return html_code
+    return html_code, spin
 
 def get_info(html_code):
     html = BeautifulSoup(html_code, 'html.parser')
