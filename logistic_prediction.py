@@ -11,6 +11,7 @@ html_code, spin = research()
 html = BeautifulSoup(html_code, 'html.parser')
 kills, deaths, assists, game_results, KDAs, game_last_results = [], [], [], [], [], [[0 for col in range(4)] for row in range(spin)]
 j = 0
+cnt = 0
 
 for i in range(0, 3 * spin, 3):
     kill = int(html.select('.GameItem>.Content>.KDA>.KDA>span')[i].get_text())
@@ -39,18 +40,23 @@ for i in range(spin):
     if df_record.iloc[i, 1] == 0:
         df_record.iloc[i, 4] = round(df_record.iloc[i, 0] + df_record.iloc[i, 2], 2)
 
+for i in range(spin):
+    if df_record.iloc[i, 3] == '승리':
+        df_record.iloc[i, 3] = 1
+    elif df_record.iloc[i, 3] == '다시하기':
+        df_record.iloc[i, 3] = -1
+        cnt += 1
+    else:
+        df_record.iloc[i, 3] = 0
+
+df_record.drop(df_record.loc[df_record['GameResult']==-1].index, inplace=True)
+
 print(df_record)
 
 #------------------------------------------------------------------------------- 데이터프레임화 완료
 
-for i in range(spin):
-    if df_record.iloc[i, 3] == '승리':
-        df_record.iloc[i, 3] = 1
-    else:
-        df_record.iloc[i, 3] = 0
-
 x, y = [], []
-for i in range(spin):
+for i in range(spin - cnt):
     x.append(df_record.iloc[i, 4])
     y.append(df_record.iloc[i, 3])
 
@@ -62,7 +68,7 @@ model.compile(optimizer=sgd ,loss='binary_crossentropy', metrics=['binary_accura
 
 model.fit(x, y, batch_size=1, epochs=500, shuffle=False)
 
-for i in range(spin):
+for i in range(spin - cnt):
     if y[i] == 1:
         plt.scatter(x[i], y[i], color='blue')
     else:

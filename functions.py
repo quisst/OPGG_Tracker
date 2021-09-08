@@ -31,14 +31,14 @@ def research():
     except:
         pass
 
-    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="right_gametype_soloranked"]/a')))
+    WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="right_gametype_soloranked"]/a')))
     driver.find_element_by_xpath('//*[@id="right_gametype_soloranked"]/a').click()
-    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="right_match"]')))
+    WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SummonerLayoutContent"]/div[2]/div[2]/div/div[2]/div[4]/a')))
 
     num = math.ceil(spin / 20)
     for i in range(num-1):
         driver.find_element_by_xpath('//*[@id="SummonerLayoutContent"]/div[2]/div[2]/div/div[2]/div[{0}]/a'.format(i+4)).click()
-        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SummonerLayoutContent"]/div[2]/div[2]/div/div[2]/div[{0}]/a'.format(i+4))))
+        WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="SummonerLayoutContent"]/div[2]/div[2]/div/div[2]/div[{0}]/a'.format(i+4))))
 
     time.sleep(1)
     html_code = driver.page_source
